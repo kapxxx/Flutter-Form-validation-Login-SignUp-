@@ -7,72 +7,80 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      debugShowCheckedModeBanner: false,
+      home: MyHome(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-
-
-  final String title;
+class MyHome extends StatefulWidget {
+  const MyHome({Key? key}) : super(key: key);
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<MyHome> createState() => _MyHomeState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _MyHomeState extends State<MyHome> {
 
-  void _incrementCounter() {
-    setState(() {
+  GlobalKey<FormState> formkey = GlobalKey<FormState>();
 
-      _counter++;
-    });
+  // ============ this is fuction which return & show error in console =======
+  void validate()
+  {
+    if(formkey.currentState!.validate()){
+      print('ok');
+    }
+    else {
+        print('error');
+    }
   }
+  // ============ this is fuction which return & show error in device =======
+ String ?textValidate(value){
+    if(value.isEmpty){
+      return 'from khali mat rakho';
+    }
+    else
+      {
+        return null;
+      }
+ }
+
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
+      body: Padding(
+        padding: EdgeInsets.all(50),
+        child: Center(
+          child: Form(  // for form validation we use this form function.
+            key: formkey, //this is key that we have declare above.
+           autovalidateMode: AutovalidateMode.always, //this filed used for auto validation
+            child: Column(
+              children: [
+                TextFormField(
+                  decoration: InputDecoration(
+                    label: Text('Email'),
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: textValidate, // this propety we use from TextFormField for validation
 
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+
+                ),
+                Padding(
+                    padding: EdgeInsets.only(top: 20),
+                  child: ElevatedButton(onPressed: (){
+                    validate();
+                  },
+                  child: Text('click'),),
+                )
+              ],
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
+          )
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
