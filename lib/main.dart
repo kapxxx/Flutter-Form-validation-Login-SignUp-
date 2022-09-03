@@ -1,4 +1,7 @@
+// import 'dart:html';
+
 import 'package:flutter/material.dart';
+import 'package:form_field_validator/form_field_validator.dart';
 
 void main() {
   runApp(const MyApp());
@@ -42,13 +45,17 @@ class _MyHomeState extends State<MyHome> {
     if(value.isEmpty){
       return 'from khali mat rakho';
     }
+    else if(value.length <6){
+      return '6 char reqied';
+    }
     else
       {
         return null;
       }
  }
 
-
+  final TextEditingController pass=TextEditingController();
+  final TextEditingController pass2= TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,15 +67,80 @@ class _MyHomeState extends State<MyHome> {
            autovalidateMode: AutovalidateMode.always, //this filed used for auto validation
             child: Column(
               children: [
+                // ==============================input field for Text ==========================
+                TextFormField(
+                  decoration: InputDecoration(
+                    label: Text('name'),
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: textValidate, // this propety we use from TextFormField for validation
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 20),
+                ),
+
+                // ==============================input field for Emial ==========================
                 TextFormField(
                   decoration: InputDecoration(
                     label: Text('Email'),
                     border: OutlineInputBorder(),
                   ),
-                  validator: textValidate, // this propety we use from TextFormField for validation
-
-
+                  // validator: EmailValidator(errorText: 'not valid'), // this propety we use from third party plugin
+                  validator: MultiValidator([
+                    RequiredValidator(errorText: 'required'),
+                    EmailValidator(errorText: 'not valid')
+                  ]),
                 ),
+                Padding(
+                  padding: EdgeInsets.only(top: 20),
+                ),
+
+                // ==============================input field for password ==========================
+                TextFormField(
+                  decoration: InputDecoration(
+                    label: Text('password'),
+                    border: OutlineInputBorder(),
+                  ),
+                  // validator: EmailValidator(errorText: 'not valid'), // this propety we use from third party plugin
+                    controller: pass,
+                    validator: (val)
+                    {
+                      if(val!.isEmpty){
+                        return 'passwod dalo';
+                      }
+                      else{
+                        return null;
+                      }
+                    }
+                ),
+
+                Padding(
+                  padding: EdgeInsets.only(top: 20),
+                ),
+
+                // ==============================input field for confirm password ==========================
+                TextFormField(
+                    decoration: InputDecoration(
+                      label: Text('password'),
+                      border: OutlineInputBorder(),
+                    ),
+                    // validator: EmailValidator(errorText: 'not valid'), // this propety we use from third party plugin
+                    controller: pass2,
+                    validator: (val)
+                    {
+                      if(val!.isEmpty){
+                        return 'passwod dalo';
+                      }
+                      if(val != pass.text){
+                        return 'not match';
+                      }
+                      else{
+                        return null;
+                      }
+                    }
+                ),
+
+                // ==============================Submit button =================================
                 Padding(
                     padding: EdgeInsets.only(top: 20),
                   child: ElevatedButton(onPressed: (){
